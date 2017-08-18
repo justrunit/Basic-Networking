@@ -1,0 +1,33 @@
+import socket
+ 
+def Main():
+    
+    port = 5000
+    s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("192.168.1.1",80))
+    s.setblocking(0)
+    LanIP=s.getsockname()[0]
+    host = LanIP
+    print("Host:  ",host)
+    mySocket = socket.socket()
+    mySocket.bind((host,port))
+     
+    mySocket.listen(1)
+    conn, addr = mySocket.accept()
+    print ("Connection from: " + str(addr))
+    while True:
+            data = conn.recv(1024).decode()
+            if not data:
+                    break
+            print ("from connected  user: " + str(data))
+            if str(data)=="S":
+                conn.send("here you go".encode())
+             
+            data = str(data).upper()
+            print ("sending: " + str(data))
+            conn.send(data.encode())
+             
+    conn.close()
+     
+if __name__ == '__main__':
+    Main()
