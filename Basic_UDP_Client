@@ -1,0 +1,48 @@
+import socket as soc
+def Main():
+    clients=[]
+    port = 50000
+    host = soc.gethostbyname(soc.gethostname())
+    UDP = soc.socket(soc.AF_INET,soc.SOCK_DGRAM)
+    try:
+        UDP.bind((host,port))
+    except:
+        FindFreePort = True
+        while FindFreePort == True:
+            port +=1
+            try:  
+                UDP.bind((host,port))
+                FindFreePort = False
+            except:
+                pass
+    print("Client IP:  ",host," Client Port",port)
+    SIP=input("IP:")
+    SPort=int(input("Port"))
+    UDP.connect((SIP,SPort))
+    UDP.setblocking(1)
+    UDP.send("Hi Server".encode())
+    print("Connected")
+    while True:
+        try:
+            UDP.setblocking(0)
+            Data,CIP = UDP.recvfrom(1024)
+            print(Data.decode(),CIP)
+            message=Data
+            if CIP not in clients:
+                clients.append(CIP)
+        except:
+            pass
+        message=input("Message: ")
+        try:
+            UDP.setblocking(1)
+            UDP.send(message.encode())
+            if message=="kill server":
+                print("killed myself")
+                break
+        except:
+            pass
+    UDP.close()
+    print("closed") 
+     
+if __name__ == '__main__':
+    Main()
