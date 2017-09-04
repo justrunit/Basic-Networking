@@ -1,5 +1,4 @@
 import socket as soc
-import pickle as pic
 def Main():
     clients=[]
     port = 50000
@@ -18,19 +17,29 @@ def Main():
             except:
                 pass
     print("Server Socket",host,":",port,"is up")
-    timer=0
-    #while timer<1000000:
-    if timer==0:
-        timer+=1
-        #try:
-        UDP.setblocking(1)
-        UDP.settimeout(10)
-        Data,CIP = UDP.recvfrom(1024)
-        #RData = pic.loads(Data)
-        print(Data.decode(),CIP)
-        #except:
-        #    pass
+    while True:
+        message="nothing"
+        try:
+            UDP.setblocking(0)
+            Data,CIP = UDP.recvfrom(1024)
+            print(Data.decode(),CIP)
+            message=Data
+            if message=="kill server":
+                print("they shot me")
+                break
+            if CIP not in clients:
+                clients.append(CIP)
+                print("Client added")
+        except:
+            pass
+        try:
+            for C in clients:
+                UDP.setblocking(1)
+                UDP.sendto(("hi,this is the server, the information you sent was:"+message),(C))   
+        except:
+            pass
     UDP.close()
     print("closed") 
+     
 if __name__ == '__main__':
     Main()
