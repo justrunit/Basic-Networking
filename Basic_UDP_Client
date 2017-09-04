@@ -2,7 +2,10 @@ import socket as soc
 def Main():
     clients=[]
     port = 50000
-    host = soc.gethostbyname(soc.gethostname())
+    s=soc.socket(soc.AF_INET,soc.SOCK_DGRAM)
+    s.connect(("192.168.1.1",80))
+    s.setblocking(0)
+    host=s.getsockname()[0]
     UDP = soc.socket(soc.AF_INET,soc.SOCK_DGRAM)
     try:
         UDP.bind((host,port))
@@ -18,9 +21,10 @@ def Main():
     print("Client IP:  ",host," Client Port",port)
     SIP=input("IP:")
     SPort=int(input("Port"))
+    Name=input("Your Name: ")
     UDP.connect((SIP,SPort))
     UDP.setblocking(1)
-    UDP.send("Hi Server".encode())
+    UDP.send(("Hi Server, this is:"+Name).encode())
     print("Connected")
     while True:
         try:
@@ -46,3 +50,5 @@ def Main():
      
 if __name__ == '__main__':
     Main()
+
+
