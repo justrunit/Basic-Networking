@@ -1,0 +1,36 @@
+import socket as soc
+import pickle as pic
+def Main():
+    clients=[]
+    port = 50000
+    host = soc.gethostbyname(soc.gethostname())
+    print("Host:  ",host)
+    UDP = soc.socket(soc.AF_INET,soc.SOCK_DGRAM)
+    try:
+        UDP.bind((host,port))
+    except:
+        FindFreePort = True
+        while FindFreePort == True:
+            port +=1
+            try:  
+                UDP.bind((host,port))
+                FindFreePort = False
+            except:
+                pass
+    print("Server Socket",host,":",port,"is up")
+    timer=0
+    #while timer<1000000:
+    if timer==0:
+        timer+=1
+        #try:
+        UDP.setblocking(1)
+        UDP.settimeout(10)
+        Data,CIP = UDP.recvfrom(1024)
+        #RData = pic.loads(Data)
+        print(Data.decode(),CIP)
+        #except:
+        #    pass
+    UDP.close()
+    print("closed") 
+if __name__ == '__main__':
+    Main()
