@@ -2,8 +2,10 @@ import socket as soc
 def Main():
     clients=[]
     port = 50000
-    host = soc.gethostbyname(soc.gethostname())
-    print("Host:  ",host)
+    s=soc.socket(soc.AF_INET,soc.SOCK_DGRAM)
+    s.connect(("192.168.1.1",80))
+    s.setblocking(0)
+    host=s.getsockname()[0]
     UDP = soc.socket(soc.AF_INET,soc.SOCK_DGRAM)
     try:
         UDP.bind((host,port))
